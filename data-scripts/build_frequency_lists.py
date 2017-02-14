@@ -66,7 +66,7 @@ DICTIONARIES_CZECH = dict(
 
 DICTIONARIES = DICTIONARIES_CZECH
 
-MIN_GUESSES_BEFORE_GROWING_SEQUENCE = 10000
+MIN_GUESSES_BEFORE_GROWING_SEQUENCE = 1000
 
 # returns {list_name: {token: rank}}, as tokens and ranks occur in each file.
 def parse_frequency_lists(data_dir):
@@ -97,7 +97,7 @@ def parse_frequency_lists(data_dir):
     return freq_lists
 
 def is_rare_and_short(token, rank):
-    return len(token) < 2 or rank >= 10**len(token)
+    return rank >= 10**len(token) or len(token) <= 2
 
 def has_only_one_char(token):
     return len(set(token)) == 1
