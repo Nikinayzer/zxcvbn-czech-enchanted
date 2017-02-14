@@ -18,7 +18,7 @@ qwerty = r'''
 '''
 
 qwertzcs = r'''
-                                 =%
+;° +1 ě2 š3 č4 ř5 ž6 ý7 á8 í9 é0 =% ´ˇ
     qQ wW eE rR tT zZ uU iI oO pP ú/ )(
      aA sS dD fF gG hH jJ kK lL ů" §!
       yY xX cC vV bB nN mM ,? .: -_
@@ -105,7 +105,7 @@ if __name__ == '__main__':
         f.write('adjacency_graphs = \n  ')
         lines = []
         for graph_name, args in [('qwerty', (qwerty, True)),
-                                 ('qwertzcs', (dvorak, True)),
+                                 ('qwertzcs', (qwertzcs, True)),
                                  ('dvorak', (dvorak, True)),
                                  ('keypad', (keypad, False)),
                                  ('mac_keypad', (mac_keypad, False))]:
