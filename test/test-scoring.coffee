@@ -272,6 +272,21 @@ test 'spatial guesses', (t) ->
       guesses += nCk(i-1, j-1) * s * Math.pow(d, j)
   msg = "spatial guesses accounts for turn positions, directions and starting keys"
   t.equal scoring.spatial_guesses(match), guesses, msg
+
+  match =
+    token: 'yxcft6zh'
+    graph: 'qwerty'
+    turns: 3
+    shifted_count: 0
+  guesses = 0
+  L = match.token.length
+  s = scoring.KEYBOARD_STARTING_POSITIONS
+  d = scoring.KEYBOARD_AVERAGE_DEGREE
+  for i in [2..L]
+    for j in [1..Math.min(match.turns, i-1)]
+      guesses += nCk(i-1, j-1) * s * Math.pow(d, j)
+  msg = "spatial guesses accounts for turn positions, directions and starting keys"
+  t.equal scoring.spatial_guesses(match), guesses, msg
   t.end()
 
 test 'dictionary_guesses', (t) ->
