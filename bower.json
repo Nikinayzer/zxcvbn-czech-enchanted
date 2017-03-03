@@ -1,6 +1,6 @@
 {
     "name": "zxcvbn-czech",
-    "description": "realistic password strength estimation with czech distionaries",
+    "description": "realistic password strength estimation with czech dictionaries",
     "main": "dist/zxcvbn.js",
     "keywords": [
         "password",
