@@ -107,7 +107,8 @@ matching =
     for dictionary_name, ranked_dict of _ranked_dictionaries
       for i in [0...len]
         for j in [i...len]
-          if password_lower[i..j] of ranked_dict
+          # minimal length of word in dictionaries is 3
+          if (j - i) >= 2 and password_lower[i..j] of ranked_dict
             word = password_lower[i..j]
             rank = ranked_dict[word]
             matches.push

@@ -124,11 +124,11 @@ test 'dictionary matching', (t) ->
       board: 3
       abcd: 4
       cdef: 5
-    d2:
-      'z': 1
-      '8': 2
-      '99': 3
-      '$': 4
+    d2:             # min word length in dict is 3
+      'zzz': 1  
+      '888': 2
+      '9999': 3
+      '$%^': 4
       'asdf1234&*': 5
 
   matches = dm 'motherboard'
@@ -147,11 +147,11 @@ test 'dictionary matching', (t) ->
     rank: [4, 5]
     dictionary_name: ['d1', 'd1']
 
-  matches = dm 'BoaRdZ'
-  patterns = ['BoaRd', 'Z']
+  matches = dm 'BoaRdZzz'
+  patterns = ['BoaRd', 'Zzz']
   msg = "ignores uppercasing"
-  check_matches msg, t, matches, 'dictionary', patterns, [[0,4], [5,5]],
-    matched_word: ['board', 'z']
+  check_matches msg, t, matches, 'dictionary', patterns, [[0,4], [5,7]],
+    matched_word: ['board', 'zzz']
     rank: [3, 1]
     dictionary_name: ['d1', 'd2']
 
