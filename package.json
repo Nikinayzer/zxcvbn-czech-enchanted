@@ -1,11 +1,11 @@
 {
-  "name": "zxcvbn",
+  "name": "zxcvbn-czech",
   "version": "4.4.2",
-  "description": "realistic password strength estimation",
-  "author": "Dan Wheeler",
+  "description": "realistic password strength estimation with czech dictionaries",
+  "author": "Original author Dan Wheeler, modification by Lubos Pavlicek",
   "license": "MIT",
   "main": "lib/main.js",
-  "repository": "dropbox/zxcvbn",
+  "repository": "lpavlicek/zxcvbn-czech",
   "scripts": {
     "test": "coffeetape test/*.coffee | faucet",
     "test-saucelabs": "zuul -- test/*.coffee",
