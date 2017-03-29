@@ -52,13 +52,13 @@ DICTIONARIES_CZECH_LARGE = dict(
 )
 
 DICTIONARIES_CZECH = dict(
-    us_tv_and_film    = 8000,
-    english_wikipedia = 8000,
+    us_tv_and_film    = 7000,
+    english_wikipedia = 7000,
     passwords         = 25000,
-    surnames          = 8000,
+    surnames          = 7000,
     male_names        = None,
     female_names      = None,
-    czech_names       = 25000,
+    czech_names       = 23000,
     czech_passwords   = 20000,
     czech_wikipedia   = 11000,
     czech_subtitles   = 4000,
