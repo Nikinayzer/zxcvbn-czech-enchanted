@@ -124,7 +124,7 @@ test 'dictionary matching', (t) ->
       board: 3
       abcd: 4
       cdef: 5
-    d2:             # min word length in dict is 3
+    d2:             # min token length is 3
       'zzz': 1  
       '888': 2
       '9999': 3
@@ -183,17 +183,8 @@ test 'dictionary matching', (t) ->
   msg = "default dictionaries"
   check_matches msg, t, matches, 'dictionary', patterns, ijs,
     matched_word: patterns
-    rank: [305]
+    rank: [308]
     dictionary_name: ['us_tv_and_film']
-
-  matches = matching.dictionary_match 'jiri'
-  patterns = ['jiri']
-  ijs = [[0,3]]
-  msg = "default dictionaries"
-  check_matches msg, t, matches, 'dictionary', patterns, ijs,
-    matched_word: patterns
-    rank: [2]
-    dictionary_name: ['czech_names']
 
   matching.set_user_input_dictionary ['foo', 'bar']
   matches = matching.dictionary_match 'foobar'
@@ -324,7 +315,6 @@ test 'spatial matching', (t) ->
     [ 'hGFd',         'qwerty',     1, 2 ]
     [ '/;p09876yhn',  'qwerty',     3, 0 ]
     [ 'Xdr%',         'qwerty',     1, 2 ]
-    [ 'ZuioP0',       'qwertzcs',   2, 3 ]
     [ '159-',         'keypad',     1, 0 ]
     [ '*84',          'keypad',     1, 0 ]
     [ '/8520',        'keypad',     1, 0 ]
@@ -551,7 +541,7 @@ test 'omnimatch', (t) ->
   matches = matching.omnimatch password
   for [pattern_name, [i, j]] in [
     [ 'dictionary',  [0, 6] ]
-    [ 'dictionary',  [11, 15] ]
+    [ 'dictionary',  [7, 15] ]
     [ 'date',        [16, 23] ]
     [ 'repeat',      [24, 27] ]
     ]

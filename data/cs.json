@@ -1,0 +1,15 @@
+{
+	"dictionaries" : {
+		"us_tv_and_film" : 7000,
+		"english_wikipedia" : 7000,
+        "passwords" : 25000,
+        "surnames" : 7000,
+        "male_names" : null,
+        "female_names" : null,
+        "cs_names" : 23000,
+        "cs_passwords" : 20000,
+        "cs_wikipedia" : 11000,
+        "cs_subtitles" : 4000
+	},
+	"keyboards" : [ "qwerty", "qwertz_cs" ]
+}
