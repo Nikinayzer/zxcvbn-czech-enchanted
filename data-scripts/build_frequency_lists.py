@@ -6,6 +6,7 @@ import codecs
 import json
 
 from operator import itemgetter
+from collections import deque
 
 def usage():
     return '''
@@ -30,16 +31,19 @@ A warning will be printed if DICTIONARIES contains a dictionary name that doesn'
 passed data dir, or vice-versa.
     ''' % sys.argv[0]
 
+# maps dict name to num words. None value means "include all words"
 DEFAULT_DICTIONARIES = dict(
-        us_tv_and_film    = 30000,
-        english_wikipedia = 30000,
-        passwords         = 30000,
-        surnames          = 10000,
-        male_names        = None,
-        female_names      = None,
-    )
+    us_tv_and_film    = 30000,
+    english_wikipedia = 30000,
+    passwords         = 30000,
+    surnames          = 10000,
+    male_names        = None,
+    female_names      = None,
+)
 
 MIN_GUESSES_BEFORE_GROWING_SEQUENCE = 1000
+MIN_TOKEN_LENGTH = 3
+BRUTAL_MIN_LENGTH = 5
 
 # returns {list_name: {token: rank}}, as tokens and ranks occur in each file.
 def parse_frequency_lists(data_dir, dictionaries):
@@ -52,19 +56,19 @@ def parse_frequency_lists(data_dir, dictionaries):
             msg = 'Info: %s appears in %s directory but not in DICTIONARY settings. Excluding.'
             print(msg % (freq_list_name, data_dir))
             continue
-        token_to_rank = {}
+        tokens = deque()
         with codecs.open(os.path.join(data_dir, filename), 'r', 'utf8') as f:
             for i, line in enumerate(f):
-                rank = i + 1 # rank starts at 1
+                rank = i + 1
                 token = line.split()[0]
+                if is_rare_and_short(token, rank):
+                    continue
                 if has_only_one_char(token):
                     continue
                 if has_comma_or_double_quote(token, rank, freq_list_name):
                     continue
-                if is_rare_and_short(token, rank):
-                    continue
-                token_to_rank[token] = rank
-        freq_lists[freq_list_name] = token_to_rank
+                tokens.append(token)
+        freq_lists[freq_list_name] = tokens
     for freq_list_name in dictionaries:
         if freq_list_name not in freq_lists:
             msg = 'Warning: %s appears in DICTIONARY settings but not in %s directory. Excluding.'
@@ -72,7 +76,7 @@ def parse_frequency_lists(data_dir, dictionaries):
     return freq_lists
 
 def is_rare_and_short(token, rank):
-    return rank >= 10**len(token) or len(token) <= 2
+    return len(token) < MIN_TOKEN_LENGTH or rank >= 10**len(token)
 
 def has_only_one_char(token):
     return len(set(token)) == 1
@@ -87,18 +91,19 @@ def has_comma_or_double_quote(token, rank, lst_name):
     return False
 
 def is_brutal_better(token, rank, minimum_rank):
-    if (rank < MIN_GUESSES_BEFORE_GROWING_SEQUENCE):
+    if rank < MIN_GUESSES_BEFORE_GROWING_SEQUENCE:
         return False
-    if (len(token) < 5):
+    if len(token) < BRUTAL_MIN_LENGTH:
         return False
     short_token = token[:-1]
     if short_token in minimum_rank:
         srank = minimum_rank[short_token]
         if rank > ( srank * 22 ) + MIN_GUESSES_BEFORE_GROWING_SEQUENCE:
+            print ("brutal: %s %s short: %s %s" % (token, rank, short_token, srank))
             return True
     return False
 
-def filter_frequency_lists(freq_lists, dictionaries):
+def filter_frequency_lists2(freq_lists, dictionaries):
     '''
     filters frequency data according to:
         - filter out short tokens if they are too rare.
@@ -106,45 +111,38 @@ def filter_frequency_lists(freq_lists, dictionaries):
           at lower rank.
         - cut off final freq_list at limits set in DICTIONARIES, if any.
     '''
-    filtered_token_and_rank = {} # maps {name: [(token, rank), ...]}
-    token_count = {}             # maps freq list name: current token count.
-    for name in freq_lists:
-        filtered_token_and_rank[name] = []
-        token_count[name] = 0
-    minimum_rank = {} # maps token -> lowest token rank across all freq lists
-    minimum_name = {} # maps token -> freq list name with lowest token rank
-    for name, token_to_rank in sorted(freq_lists.items()):  # if not sorted, then different results
-        for token, rank in token_to_rank.items():
-            if token not in minimum_rank:
-                assert token not in minimum_name
-                minimum_rank[token] = rank
-                minimum_name[token] = name
-            else:
-                assert token in minimum_name
-                assert minimum_name[token] != name, 'same token occurs multiple times in %s' % name
-                min_rank = minimum_rank[token]
-                if rank < min_rank:
-                    minimum_rank[token] = rank
-                    minimum_name[token] = name
-    for name, token_to_rank in freq_lists.items():
-        for token, rank in token_to_rank.items():
-            if minimum_name[token] != name:
-                continue
-            if is_brutal_better (token, rank, minimum_rank):
-                continue
-            filtered_token_and_rank[name].append((token, rank))
-            token_count[name] += 1
     result = {}
-    for name, token_rank_pairs in filtered_token_and_rank.items():
-        token_rank_pairs.sort(key=itemgetter(1))
-        cutoff_limit = dictionaries[name]
-        if cutoff_limit and len(token_rank_pairs) > cutoff_limit:
-            token_rank_pairs = token_rank_pairs[:cutoff_limit]
-        result[name] = [pair[0] for pair in token_rank_pairs] # discard rank post-sort
+    for name in freq_lists:
+        result[name] = []
+    minimum_rank = {} # maps token -> lowest token rank across all freq lists
+   
+    rank = 0
+    is_next_token = True
+    while is_next_token:
+        rank = rank + 1
+        is_next_token = False
+        for name in freq_lists:
+            cutoff_limit = dictionaries[name]
+            token = first_uniq_token (freq_lists[name], minimum_rank, rank)
+            if token and (not cutoff_limit or rank <= cutoff_limit):
+                minimum_rank[token]=rank
+                result[name].append(token)
+                is_next_token = True
+
+    for name in sorted(result):
         # debug message
-        msg = 'Debug: dictionary %s, tokens: %s, last_token: %s with rank %s'
-        print(msg % (name, len(token_rank_pairs), token_rank_pairs[-1][0], token_rank_pairs[-1][1]))
+        msg = 'Debug: dictionary %s, tokens: %s, last_token: %s'
+        print(msg % (name, len(result[name]), result[name][-1]))
     return result
+
+def first_uniq_token(freq_list, minimum_rank, rank):
+    if len(freq_list) == 0:
+        return None
+    first_token = freq_list.popleft()
+    if first_token in minimum_rank or is_brutal_better(first_token, rank, minimum_rank):
+        return first_uniq_token(freq_list, minimum_rank, rank)
+    else:
+        return first_token
 
 def to_kv(lst, lst_name):
     val = '"%s".split(",")' % ','.join(lst)
@@ -180,7 +178,7 @@ def main():
         print(usage())
         sys.exit(0)
     unfiltered_freq_lists = parse_frequency_lists(data_dir, dictionaries)
-    freq_lists = filter_frequency_lists(unfiltered_freq_lists, dictionaries)
+    freq_lists = filter_frequency_lists2(unfiltered_freq_lists, dictionaries)
     with codecs.open(output_file, 'w', 'utf8') as f:
         script_name = os.path.split(sys.argv[0])[1]
         f.write('# generated by %s\n' % script_name)
