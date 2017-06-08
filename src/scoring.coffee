@@ -286,12 +286,18 @@ scoring =
   KEYPAD_STARTING_POSITIONS: (k for k,v of adjacency_graphs.keypad).length
 
   spatial_guesses: (match) ->
-    if match.graph in ['qwerty', 'qwertzcs', 'dvorak']
-      s = @KEYBOARD_STARTING_POSITIONS
-      d = @KEYBOARD_AVERAGE_DEGREE
-    else
+#    if match.graph in ['qwerty', 'qwertzcs', 'dvorak']
+#      s = @KEYBOARD_STARTING_POSITIONS
+#      d = @KEYBOARD_AVERAGE_DEGREE
+#    else
+#      s = @KEYPAD_STARTING_POSITIONS
+#      d = @KEYPAD_AVERAGE_DEGREE
+    if match.graph.indexOf('keypad') != -1
       s = @KEYPAD_STARTING_POSITIONS
       d = @KEYPAD_AVERAGE_DEGREE
+    else
+      s = @KEYBOARD_STARTING_POSITIONS
+      d = @KEYBOARD_AVERAGE_DEGREE
     guesses = 0
     L = match.token.length
     t = match.turns

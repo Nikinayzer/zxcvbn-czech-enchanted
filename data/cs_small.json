@@ -6,5 +6,7 @@
         "cs_wikipedia" : 10000,
         "cs_subtitles" : 3000
 	},
-	"keyboards" : [ "qwerty", "qwertz_cs" ]
+	"keyboards" : [ 
+		"qwerty", "qwertzcs", "keypad", "mac_keypad"
+	]
 }

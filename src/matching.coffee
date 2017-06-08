@@ -232,7 +232,8 @@ matching =
   # spatial match (qwerty/dvorak/keypad) -----------------------------------------
   # ------------------------------------------------------------------------------
 
-  spatial_match: (password, _graphs = GRAPHS) ->
+  #spatial_match: (password, _graphs = GRAPHS) ->
+  spatial_match: (password, _graphs = adjacency_graphs) ->
     matches = []
     for graph_name, graph of _graphs
       @extend matches, @spatial_match_helper(password, graph, graph_name)
@@ -246,7 +247,8 @@ matching =
       j = i + 1
       last_direction = null
       turns = 0
-      if graph_name in ['qwerty', 'qwertzcs', 'dvorak'] and @SHIFTED_RX.exec(password.charAt(i))
+      #if graph_name in ['qwerty', 'qwertzcs', 'dvorak'] and @SHIFTED_RX.exec(password.charAt(i))
+      if graph_name.indexOf('keypad') == -1 and @SHIFTED_RX.exec(password.charAt(i))
         # initial character is shifted
         shifted_count = 1
       else

@@ -7,5 +7,7 @@
         "male_names" : null,
         "female_names" : null
 	},
-	"keyboards" : [ "qwerty", "dvorak" ]
+	"keyboards" : [ 
+		"qwerty", "dvorak", "keypad", "mac_keypad"
+	]
 }

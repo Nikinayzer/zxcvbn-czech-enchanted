@@ -99,7 +99,7 @@ def is_brutal_better(token, rank, minimum_rank):
     if short_token in minimum_rank:
         srank = minimum_rank[short_token]
         if rank > ( srank * 22 ) + MIN_GUESSES_BEFORE_GROWING_SEQUENCE:
-            print ("brutal: %s %s short: %s %s" % (token, rank, short_token, srank))
+            #print ("brutal: %s %s short: %s %s" % (token, rank, short_token, srank))
             return True
     return False
 

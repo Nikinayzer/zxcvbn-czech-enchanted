@@ -50,10 +50,21 @@ Library API don't changed, so please see [Usage from original project dropbox/zx
 
 You can create a user dictionary, which will include service names, service marks, product names or specific words from a page to change your password. The typical size is 30 to 100 words. And this dictionary use as second parameter when calling zxcvbn function. You can dynamically add words identifying the user - firstname, lastname, username, address, etc.
 
+## Size, performance
+
+test - nodejs, 66000 different passwords
+zxcvbn-dropbox - average 56.7 seconds
+zxcvbn-czech   - average 58.5 seconds (without optimization for minimum length word 3 it was 70.1 seconds)
+
+size:
+zxcvbn-dropbox - 820KB,
+zxcvbn-czech   - 880KB,
+
 ## TODO
 * support for chars with diacritics in passwords,
 * feddback_messages in czech language - we are waiting for changes in master (see https://github.com/dropbox/zxcvbn/pull/124)
 * improve dictionary czech_passwords.txt, now it is much influenced by passwords leaked from LinkedIn for czech users.
+
 
 ## Acknowledgment
 
