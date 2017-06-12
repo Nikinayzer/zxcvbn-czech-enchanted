@@ -121,7 +121,7 @@ def filter_frequency_lists2(freq_lists, dictionaries):
     while is_next_token:
         rank = rank + 1
         is_next_token = False
-        for name in freq_lists:
+        for name in sorted(freq_lists):
             cutoff_limit = dictionaries[name]
             token = first_uniq_token (freq_lists[name], minimum_rank, rank)
             if token and (not cutoff_limit or rank <= cutoff_limit):
