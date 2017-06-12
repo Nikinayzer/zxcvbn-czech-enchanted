@@ -14,13 +14,6 @@ RANKED_DICTIONARIES = {}
 for name, lst of frequency_lists
   RANKED_DICTIONARIES[name] = build_ranked_dict lst
 
-GRAPHS =
-  qwerty:     adjacency_graphs.qwerty
-  qwertzcs:   adjacency_graphs.qwertzcs
-  dvorak:     adjacency_graphs.dvorak
-  keypad:     adjacency_graphs.keypad
-  mac_keypad: adjacency_graphs.mac_keypad
-
 L33T_TABLE =
   a: ['4', '@']
   b: ['8']
@@ -232,7 +225,6 @@ matching =
   # spatial match (qwerty/dvorak/keypad) -----------------------------------------
   # ------------------------------------------------------------------------------
 
-  #spatial_match: (password, _graphs = GRAPHS) ->
   spatial_match: (password, _graphs = adjacency_graphs) ->
     matches = []
     for graph_name, graph of _graphs
