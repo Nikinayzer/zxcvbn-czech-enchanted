@@ -1,8 +1,9 @@
 test = require 'tape'
 zxcvbn = require '../src/main'
 feedback = require '../src/feedback'
+feedback_l10n = require '../src/feedback_l10n'
 
-messages = feedback.messages
+messages = feedback_l10n.en
 
 test 'dictionary_warnings', (t) ->
   msg = "top10_common_password"

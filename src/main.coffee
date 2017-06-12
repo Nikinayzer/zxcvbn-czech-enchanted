@@ -8,11 +8,13 @@ time = -> (new Date()).getTime()
 zxcvbn = (password, options = {}) ->
   user_inputs = []
   feedback_messages = {}
+  feedback_language = 'en'
   if options instanceof Array
     user_inputs = options # backward-compatibility
   else
     user_inputs = options.user_inputs if options.user_inputs
     feedback_messages = options.feedback_messages if options.feedback_messages
+    feedback_language = options.feedback_language if options.feedback_language
 
   start = time()
   # reset the user inputs matcher on a per-request basis to keep things stateless
@@ -27,7 +29,7 @@ zxcvbn = (password, options = {}) ->
   attack_times = time_estimates.estimate_attack_times result.guesses
   for prop, val of attack_times
     result[prop] = val
-  result.feedback = feedback.get_feedback result.score, result.sequence, feedback_messages
+  result.feedback = feedback.get_feedback result.score, result.sequence, feedback_messages, feedback_language
   result
 
 module.exports = zxcvbn
