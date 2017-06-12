@@ -1,6 +1,6 @@
 # zxcvbn-czech
 
-Realistic password strength estimation with czech dictionaries.
+Realistic password strength estimation with czech and slovak dictionaries.
 
 This is fork of dropbox/zxcvbn, which is JavaScript password strength estimation. Please refer to [zxcvbn: realistic password strength estimation] (http://tech.dropbox.com/?p=165) for the full details and motivation behind zxcbvn. The source code for the original JavaScript (well, actually CoffeeScript) implementation can be found at:
 
@@ -27,24 +27,141 @@ In our opinion, this passwords should have score 0 on Czech websites. The except
 
 ## Differences from the original version.
 
-* Added next czech dictionaries:
-  * *czech_names.txt*      - czech firstnames, surnames and nicknames, source: http://www.mvcr.cz/clanek/cetnost-jmen-a-prijmeni-722752.aspx, nicknames are from book [Knappova: "Jak se bude vaše dítě jmenovat?"] (http://www.kosmas.cz/knihy/157964/jak-se-bude-vase-dite-jmenovat/)
-  * *czech_passwords.txt*  - compiled from data breach czech users like passwords LinkedIn users with .cz emails
-  * *czech_subtitles.txt*	 - https://github.com/hermitdave/FrequencyWords.git see also http://opus.lingfil.uu.se/OpenSubtitles2016.php
-  * *czech_wikipedia.txt*	 - wikipedia (like english_wikipedia.txt)
+* Added czech and slovak dictionaries:
+  * *cs_names.txt*		- czech firstnames, surnames and nicknames, source: http://www.mvcr.cz/clanek/cetnost-jmen-a-prijmeni-722752.aspx, nicknames are from book [Knappova: "Jak se bude vaše dítě jmenovat?"] (http://www.kosmas.cz/knihy/157964/jak-se-bude-vase-dite-jmenovat/)
+  * *cs_passwords.txt*	- compiled from password breach czech users like passwords LinkedIn users with .cz emails
+  * *cs_subtitles.txt*	- https://github.com/hermitdave/FrequencyWords.git see also http://opus.lingfil.uu.se/OpenSubtitles2016.php
+  * *cs_wikipedia.txt*	- czech wikipedia (like english_wikipedia.txt)
+  * *sk_passwords.txt*	- compiled from password breach slovak users like passwords LinkedIn users with .sk emails
+  * *sk_subtitles.txt*	- https://github.com/hermitdave/FrequencyWords.git see also http://opus.lingfil.uu.se/OpenSubtitles2016.php
+  * *sk_wikipedia.txt*	- czech wikipedia (like english_wikipedia.txt)
+* The CZ and SK keyboard layout is also included, so there are additional spatial sequences, e.g. ZuioP0 is a spatial sequence.
+* build configuration files - how many words from which dictionary will be included in the created library.
+  * data/cs.json			- generate dist/zxcvbn_cs.js
+  * data/cs_small.json		- generate dist/zxcvbn_cs_small.js
+  * data/sk.json			- generate dist/zxcvbn_sk.js
+  * data/default.json		- generate dist/zxcvbn.js
 * Our goal is not to exceed 900 KB the size of the library. So we include next modification to build_frequency_lists.py :
-  * We modified num of words from dictionaries, for example num words from us_tv_and_film reduced from 30000 to 8000.
-  * Skip words with one or two characters. Brutal has better score in most cases.
+  * Skip words with one or two characters. Brutal has better score in most cases. The performance of the library has also improved (see below).
   * Skip words with high rank if one character shorter word + brutal has better score. Example: 'republic' has rank 688, 'republica' has rank 32852. Composition 'republic' + 'a' (brutal) estimate 21814 guesses, so we skip word 'republica'.
-* The CZ keyboard layout is also included, so there are additional spacial sequences, e.g. ZuioP0 is a spatial sequence.
+* feedback localization
+  * support for custom feedback (inspired by pull request #124 from dropbox/zxcvbn - https://github.com/dropbox/zxcvbn/pull/124)
+  * support for czech and slovak feedback,
 
 ## Installation
 
-Please see [Installation from original project dropbox/zxcvbn] (https://github.com/dropbox/zxcvbn#installation).
+See also [Installation from original project dropbox/zxcvbn] (https://github.com/dropbox/zxcvbn#installation).
+
+### Manual instalation
+Download some of available libraries:
+* [zxcvbn_cs.js](https://raw.githubusercontent.com/lpavlicek/zxcvbn-czech/master/dist/zxcvbn_cs.js) - with english dictionaries, size 845KB,
+* [zxcvbn_cs_small.js](https://raw.githubusercontent.com/lpavlicek/zxcvbn-czech/master/dist/zxcvbn_cs_small.js) - with english dictionaries, size 406KB,
+* [zxcvbn_sk.js](https://raw.githubusercontent.com/lpavlicek/zxcvbn-czech/master/dist/zxcvbn_sk.js) - with slovak dictionaries, size 690KB,
+* [zxcvbn.js](https://raw.githubusercontent.com/lpavlicek/zxcvbn-czech/master/dist/zxcvbn.js) - with english dictionaries, size 814KB,
+
+Add to your .html:
+
+``` html
+<script type="text/javascript" src="path/to/zxcvbn.js"></script>
+```
 
 ## Usage, API
 
-Library API don't changed, so please see [Usage from original project dropbox/zxcvbn] (https://github.com/dropbox/zxcvbn#usage).
+Library API is inspired from pull request #124 from dropbox/zxcvbn - https://github.com/dropbox/zxcvbn/pull/124 and is backward compatible with original API, see [Usage from original project dropbox/zxcvbn] (https://github.com/dropbox/zxcvbn#usage).
+
+  zxcvbn(password, user_inputs=[])        # original (old) API
+  zxcvbn(password, options = {})          # new API
+
+``` javascript
+zxcvbn(password, options={})
+```
+
+`zxcvbn()` takes one required argument, a password, and returns a result object with several properties:
+
+``` coffee
+result.guesses            # estimated guesses needed to crack password
+result.guesses_log10      # order of magnitude of result.guesses
+
+result.crack_times_seconds # dictionary of back-of-the-envelope crack time
+                          # estimations, in seconds, based on a few scenarios:
+{
+  # online attack on a service that ratelimits password auth attempts.
+  online_throttling_100_per_hour
+
+  # online attack on a service that doesn't ratelimit,
+  # or where an attacker has outsmarted ratelimiting.
+  online_no_throttling_10_per_second
+
+  # offline attack. assumes multiple attackers,
+  # proper user-unique salting, and a slow hash function
+  # w/ moderate work factor, such as bcrypt, scrypt, PBKDF2.
+  offline_slow_hashing_1e4_per_second
+
+  # offline attack with user-unique salting but a fast hash
+  # function like SHA-1, SHA-256 or MD5. A wide range of
+  # reasonable numbers anywhere from one billion - one trillion
+  # guesses per second, depending on number of cores and machines.
+  # ballparking at 10B/sec.
+  offline_fast_hashing_1e10_per_second
+}
+
+result.crack_times_display # same keys as result.crack_times_seconds,
+                           # with friendlier display string values:
+                           # "less than a second", "3 hours", "centuries", etc.
+
+result.score      # Integer from 0-4 (useful for implementing a strength bar)
+
+  0 # too guessable: risky password. (guesses < 10^3)
+
+  1 # very guessable: protection from throttled online attacks. (guesses < 10^6)
+
+  2 # somewhat guessable: protection from unthrottled online attacks. (guesses < 10^8)
+
+  3 # safely unguessable: moderate protection from offline slow-hash scenario. (guesses < 10^10)
+
+  4 # very unguessable: strong protection from offline slow-hash scenario. (guesses >= 10^10)
+
+result.feedback   # verbal feedback to help choose better passwords. set when score <= 2.
+
+  result.feedback.warning     # explains what's wrong, eg. 'this is a top-10 common password'.
+                              # not always set -- sometimes an empty string
+
+  result.feedback.suggestions # a possibly-empty list of suggestions to help choose a less
+                              # guessable password. eg. 'Add another word or two'
+
+result.sequence   # the list of patterns that zxcvbn based the
+                  # guess calculation on.
+
+result.calc_time  # how long it took zxcvbn to calculate an answer,
+                  # in milliseconds.
+````
+
+The optional `options` argument is an object that can contain the following optional properties:
+- `user_inputs` is an array of strings that zxcvbn will treat as an extra dictionary. This can be whatever list of strings you like, but is meant for user inputs from other fields of the form, like name and email. That way a password that includes a user's personal information can be heavily penalized. This list is also good for site-specific vocabulary — Acme Brick Co. might want to include ['acme', 'brick', 'acmebrick', etc].
+- `feedback_messages` is an object that enables zxcvbn's consumers to customize the messages used for giving feedback to the user. This could be used to skip messages that aren't desired to be returned as feedback to the user, or to modify or internationalize the existing messages.
+The list of keys to be used in this parameter could be find in [./src/feedback.coffee](./blob/master/src/feedback.coffee#L4).
+For example, to remove the `use_a_few_words` feedback message, we would call zxcvbn as follows:
+```javascript
+zxcvbn(password, {
+  feedback_messages:{
+    use_a_few_words: null
+  }
+});
+```
+any falsey value passed as a message will make zxcvbn skip it.
+If we would like to modify or internationalize the message instead, we would pass the new message as the value as follows:
+```javascript
+zxcvbn(password, {
+  feedback_messages:{
+    use_a_few_words: 'Usa algunas palabras, evita frases comunes'
+  }
+});
+```
+any absent message in the `feedback_messages` object will default to the in-app feedback message.
+- `feedback_language` - language for localized feedback. The library now contains messages in three languages:
+  * `cs` - czech feedback
+  * `en` - english feedback (default)
+  * `sk` - slovak feedback
 
 ### Suggestion
 
@@ -57,13 +174,13 @@ zxcvbn-dropbox - average 56.7 seconds
 zxcvbn-czech   - average 58.5 seconds (without optimization for minimum length word 3 it was 70.1 seconds)
 
 size:
-zxcvbn-dropbox - 820KB,
-zxcvbn-czech   - 880KB,
+zxcvbn-dropbox  - 820KB,
+zxcvbn-cs       - 860KB,
+zxcvbn-cs-small - 411KB,
+zxcvbn-sk       - 701KB,
 
 ## TODO
 * support for chars with diacritics in passwords,
-* feddback_messages in czech language - we are waiting for changes in master (see https://github.com/dropbox/zxcvbn/pull/124)
-* improve dictionary czech_passwords.txt, now it is much influenced by passwords leaked from LinkedIn for czech users.
 
 
 ## Acknowledgment
