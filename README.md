@@ -36,7 +36,7 @@ In our opinion, this passwords should have score 0 on Czech websites. The except
   * *sk_subtitles.txt*	- https://github.com/hermitdave/FrequencyWords.git see also http://opus.lingfil.uu.se/OpenSubtitles2016.php
   * *sk_wikipedia.txt*	- czech wikipedia (like english_wikipedia.txt)
 * The CZ and SK keyboard layout is also included, so there are additional spatial sequences, e.g. ZuioP0 is a spatial sequence.
-* build configuration files - how many words from which dictionary will be included in the created library.
+* Build configuration files - how many words from which dictionary will be included in the created library.
   * data/cs.json			- generate dist/zxcvbn_cs.js
   * data/cs_small.json		- generate dist/zxcvbn_cs_small.js
   * data/sk.json			- generate dist/zxcvbn_sk.js
@@ -44,8 +44,8 @@ In our opinion, this passwords should have score 0 on Czech websites. The except
 * Our goal is not to exceed 900 KB the size of the library. So we include next modification to build_frequency_lists.py :
   * Skip words with one or two characters. Brutal has better score in most cases. The performance of the library has also improved (see below).
   * Skip words with high rank if one character shorter word + brutal has better score. Example: 'republic' has rank 688, 'republica' has rank 32852. Composition 'republic' + 'a' (brutal) estimate 21814 guesses, so we skip word 'republica'.
-* feedback localization
-  * support for custom feedback (inspired by pull request #124 from dropbox/zxcvbn - https://github.com/dropbox/zxcvbn/pull/124)
+* Feedback localization
+  * support for custom feedback (inspired by [pull request #124 from dropbox/zxcvbn] (https://github.com/dropbox/zxcvbn/pull/124))
   * support for czech and slovak feedback,
 
 ## Installation
@@ -67,20 +67,20 @@ Add to your .html:
 
 ## Usage, API
 
-Library API is inspired from pull request #124 from dropbox/zxcvbn - https://github.com/dropbox/zxcvbn/pull/124 and is backward compatible with original API, see [Usage from original project dropbox/zxcvbn] (https://github.com/dropbox/zxcvbn#usage).
+Library API is inspired from [pull request #124 in dropbox/zxcvbn] (https://github.com/dropbox/zxcvbn/pull/124) and is backward compatible with original API, see [Usage from original project dropbox/zxcvbn] (https://github.com/dropbox/zxcvbn#usage).
 
 ``` javascript
 zxcvbn(password, user_inputs=[])        // original (old) API
 zxcvbn(password, options={})			// new API
 ```
 
-`zxcvbn()` takes one required argument, a password, and returns a result object with several properties, see [Original API](https://github.com/dropbox/zxcvbn#usage)
+`zxcvbn()` takes one required argument, a password, and returns a result object with several properties, see [Original zxcvbn description](https://github.com/dropbox/zxcvbn#usage)
 
 
 The optional `options` argument is an object that can contain the following optional properties:
 - `user_inputs` is an array of strings that zxcvbn will treat as an extra dictionary. This can be whatever list of strings you like, but is meant for user inputs from other fields of the form, like name and email. That way a password that includes a user's personal information can be heavily penalized. This list is also good for site-specific vocabulary — Acme Brick Co. might want to include ['acme', 'brick', 'acmebrick', etc].
 - `feedback_messages` is an object that enables zxcvbn's consumers to customize the messages used for giving feedback to the user. This could be used to skip messages that aren't desired to be returned as feedback to the user, or to modify or internationalize the existing messages.
-The list of keys to be used in this parameter could be find in [./src/feedback.coffee](./blob/master/src/feedback.coffee#L4).
+The list of keys to be used in this parameter could be find in [./src/feedback_l10n.coffee](./blob/master/src/feedback_l10n.coffee#L4).
 For example, to remove the `use_a_few_words` feedback message, we would call zxcvbn as follows:
 ```javascript
 zxcvbn(password, {
@@ -114,25 +114,46 @@ zxcvbn(password, {
 });
 ```
 
-### Suggestion
+### Usage Suggestion
 
 You can create a user dictionary, which will include service names, service marks, product names or specific words from a page to change your password. The typical size is 30 to 100 words. And this dictionary use as second parameter when calling zxcvbn function. You can dynamically add words identifying the user - firstname, lastname, username, address, etc.
 
 ## Size, performance
 
-test - nodejs, 66000 different passwords
-zxcvbn-dropbox - average 56.7 seconds
-zxcvbn-czech   - average 58.5 seconds (without optimization for minimum length word 3 it was 70.1 seconds)
+### Size
 
-size:
-zxcvbn-dropbox  - 820KB,
-zxcvbn-cs       - 860KB,
-zxcvbn-cs-small - 411KB,
-zxcvbn-sk       - 701KB,
+library | size | gzip -9 | brotli 9 | brotli 11
+------- | ---- | ------- | -------- | ---------
+zxcvbn_dropbox.js (original dropbox) | 803KB | 389KB | 373KB | 350KB
+zxcvbn.js (en dictionaries) | 814KB | 395KB | 378KB | 355KB
+zxcvbn_cs.js | 841KB | 388KB | 379KB | 354KB
+zxcvbn_cs_small.js   | 406KB | 187KB | 182KB | 170KB
+zxcvbn_sk.js | 684KB | 328KB | 319KB | 298KB
+
+### Performance test
+
+test - nodejs, 100000 different passwords from linkedin breach
+
+library | size | dictionaries | time (shorter is better)
+------- | ---- | ------------ | ------------------------
+zxcvbn_dropbox.js (original dropbox) | 803KB | 6+1 | 127.9 seconds
+zxcvbn.js (en dictionaries) | 814KB | 6+1 | 112 seconds
+zxcvbn_cs.js | 841KB | 7+1 | 122,4 seconds
+zxcvbn_cs_small.js   | 406KB | 4+1 | 99,7 seconds
+zxcvbn_sk.js | 684KB | 7+1 | 121,4 seconds
+zxcvbn_en2.js (en experimental) | 814KB | 3+1 | 94 seconds
+
+- +1 - a 90-word local dictionary was used in the tests
+- zxcvbn_en2.js - experimental assembly with merged dictionaries (passwords.txt, en_wiki_film.txt, us_names.txt)
+
+## Development
+
+TODO 
 
 ## TODO
+* missing dictionary with slovak names and surnames,
 * support for chars with diacritics in passwords,
-
+* next languages ? - feedback localization, local dictionaries,
 
 ## Acknowledgment
 
