@@ -27,18 +27,27 @@ test 'zxcvbn_run', (t) ->
       warning: messages_cs['top10_common_password']
     }
 
+  expected_local_dictionary = { 
+      suggestions: [ messages['uncommon_words_are_better'] ],
+      warning: messages['a_word_is_easy']
+    }
+
   t.deepEqual zxcvbn('password').feedback, expected, msg
 
   t.deepEqual zxcvbn('password', local_dictionary).feedback, expected, msg
 
   t.deepEqual zxcvbn('password', { } ).feedback, expected, msg
 
-  t.deepEqual zxcvbn('password', { user_input: local_dictionary } ).feedback, expected, msg
+  t.deepEqual zxcvbn('password', { user_inputs: local_dictionary } ).feedback, expected, msg
 
-#  t.deepEqual zxcvbn('password', { user_input: local_dictionary, feedback_messages: custom_messages } ).feedback, expected_custom, msg
+#  t.deepEqual zxcvbn('password', { user_inputs: local_dictionary, feedback_messages: custom_messages } ).feedback, expected_custom, msg
 
   t.deepEqual zxcvbn('password', { feedback_messages: custom_messages } ).feedback, expected_custom, msg
 
   t.deepEqual zxcvbn('password', { feedback_language: 'cs' } ).feedback, expected_l10n, msg
+
+  t.deepEqual zxcvbn('OurGoodCompany', local_dictionary).feedback, expected_local_dictionary, msg
+
+  t.deepEqual zxcvbn('OurGoodCompany', { user_inputs: local_dictionary} ).feedback, expected_local_dictionary, msg
 
   t.end()
