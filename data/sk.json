@@ -1,11 +1,8 @@
 {
 	"dictionaries" : {
-		"us_tv_and_film" : 5000,
-		"english_wikipedia" : 8000,
+		"en_wiki_film" : 12000,
         "passwords" : 20000,
-        "surnames" : 6000,
-        "male_names" : null,
-        "female_names" : null,
+        "us_names" :	10500,
         "cs_passwords" : 20000,
         "sk_passwords" : 25000,
         "sk_wikipedia" : 8000,
