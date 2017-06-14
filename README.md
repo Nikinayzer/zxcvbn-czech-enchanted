@@ -22,7 +22,7 @@ hesloheslo | 1 | 4.6
 heslo123 | 2 | 6.3
 janicka | 2 | 6.8
 
-In our opinion, this passwords should have score 0 on Czech websites. The exception is 'linkedin' - the name of the service. This word should be in user dictionary (user_inputs[] - second parameter for function zxcvbn).
+In our opinion, this passwords should have score 0 on Czech websites. The exception is 'linkedin' - the name of the service. This word should be in user dictionary (optional parameter `user_inputs`).
 
 
 ## Differences from the original version.
