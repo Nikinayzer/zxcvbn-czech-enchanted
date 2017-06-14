@@ -123,7 +123,7 @@ see [runtime latency] (https://github.com/dropbox/zxcvbn#runtime-latency)
 You see the time in ms needed to evaluate the entered password on the [test page](TODO).
 Evaluation takes ~4-30ms for ~25 char passwords on modern browsers/CPUs and ~20-100ms in the Firefox on Samsung S4 mini. Evaluation for ~100 char passwords takes ~100-300ms on modern browsers/CPUs and ~500-2000ms on Samsung S4 mini.
 
-When editing I test performance using nodejs - I test 100,000 different passwords from linkedin breach.
+When editing I test performance using nodejs. I test 100,000 different passwords from linkedin breach.
 
 library | size | dictionaries | time (shorter is better)
 ------- | ---- | ------------ | ------------------------
@@ -145,7 +145,6 @@ Some conclusions from benchmarks:
 
 ### script load latency
 see [script load latency] (https://github.com/dropbox/zxcvbn#script-load-latency)
-
 
 library | size | gzip -6 | zopfli | brotli 4 | brotli 11
 ------- | ---- | ------- | ------ | -------- | ---------
