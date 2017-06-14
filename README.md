@@ -66,7 +66,7 @@ Add to your .html:
 
 ## Usage, API
 
-Library API is inspired from [pull request #124 in dropbox/zxcvbn] (https://github.com/dropbox/zxcvbn/pull/124) and is backward compatible with original API, see [Usage from original project dropbox/zxcvbn] (https://github.com/dropbox/zxcvbn#usage).
+Library API is compatible with original API, see [Usage from original project dropbox/zxcvbn] (https://github.com/dropbox/zxcvbn#usage). New parameters are passed through the options and are compatible with [pull request #124 in dropbox/zxcvbn] (https://github.com/dropbox/zxcvbn/pull/124).
 
 ``` javascript
 zxcvbn(password, user_inputs=[])        // original (old) API
@@ -74,7 +74,6 @@ zxcvbn(password, options={})			// new API
 ```
 
 `zxcvbn()` takes one required argument, a password, and returns a result object with several properties, see [Original zxcvbn description](https://github.com/dropbox/zxcvbn#usage)
-
 
 The optional `options` argument is an object that can contain the following optional properties:
 - `user_inputs` is an array of strings that zxcvbn will treat as an extra dictionary. This can be whatever list of strings you like, but is meant for user inputs from other fields of the form, like name and email. That way a password that includes a user's personal information can be heavily penalized. This list is also good for site-specific vocabulary — Acme Brick Co. might want to include ['acme', 'brick', 'acmebrick', etc].
@@ -133,6 +132,7 @@ zxcvbn.js (en dictionaries) | 814KB | 6+1 | 112 seconds
 zxcvbn_cs.js | 841KB | 7+1 | 122,4 seconds
 zxcvbn_cs_small.js   | 406KB | 4+1 | 99,7 seconds
 zxcvbn_sk.js | 684KB | 7+1 | 121,4 seconds
+------- | ---- | ------------ | ------------------------
 zxcvbn_en2.js (experimental) | 814KB | 3+1 | 94 seconds
 
 - +1 - a 90-word user_input extra dictionary was used in the tests
@@ -147,18 +147,15 @@ Some conclusions from benchmarks:
 see [script load latency] (https://github.com/dropbox/zxcvbn#script-load-latency)
 
 
-library | size | gzip -9 | brotli 9 | brotli 11
-------- | ---- | ------- | -------- | ---------
-zxcvbn_dropbox.js (original dropbox) | 803KB | 389KB | 373KB | 350KB
-zxcvbn.js (en dictionaries) | 814KB | 395KB | 378KB | 355KB
-zxcvbn_cs.js | 841KB | 388KB | 379KB | 354KB
-zxcvbn_cs_small.js   | 406KB | 187KB | 182KB | 170KB
-zxcvbn_sk.js | 684KB | 328KB | 319KB | 298KB
+library | size | gzip -6 | zopfli | brotli 4 | brotli 11
+------- | ---- | ------- | ------ | -------- | ---------
+zxcvbn_dropbox.js (original dropbox) | 803KB | 390KB | 372KB | 388KB | 350KB
+zxcvbn.js (en dictionaries)          | 814KB | 396KB | 378KB | 393KB | 355KB
+zxcvbn_cs.js         | 841KB | 389KB | 368KB | 392KB | 354KB
+zxcvbn_cs_small.js   | 406KB | 187KB | 176KB | 187KB | 170KB
+zxcvbn_sk.js         | 684KB | 328KB | 312KB | 329KB | 298KB
 
-https://kevinlocke.name/bits/2016/01/20/serving-pre-compressed-files-with-apache-multiviews/
-
-### Performance test
-
+Web servers typically use `gzip -6` or `brotli 4` for dynamic compression. Pre-compression with [zopfli](https://en.wikipedia.org/wiki/Zopfli) or `brotli 11` creates even smaller files. See [Serving Pre-Compressed Files with Apache](https://kevinlocke.name/bits/2016/01/20/serving-pre-compressed-files-with-apache-multiviews/), in Nginx use [gzip_static on;](https://www.nginx.com/resources/admin-guide/compression-and-decompression/) and/or [brotli_static on;](https://certsimple.com/blog/nginx-brotli);
 
 ## Development
 
