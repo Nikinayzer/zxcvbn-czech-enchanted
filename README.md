@@ -144,7 +144,7 @@ Some conclusions from benchmarks:
 * Other implementations of javascript may behave differently.
 
 ### script load latency
-see [script load latency] (https://github.com/dropbox/zxcvbn#script-load-latency)
+see [script load latency](https://github.com/dropbox/zxcvbn#script-load-latency)
 
 library | size | gzip -6 | zopfli | brotli 4 | brotli 11
 ------- | ---- | ------- | ------ | -------- | ---------
