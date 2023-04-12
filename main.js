@@ -1,6 +1,18 @@
 let body = $('body');
 let input = $('input');
 
+
+console.log("A little bit of theory: ");
+console.log("Pokud je náhodný výběr a jednotlivé znaky v hesle jsou rozmístěny rovnoměrně, tak entropie (e)závisí na počtu prvků v množině (N) a na počtu prvků, které je mají vybrat (L):");
+console.log("𝑺 = 𝒍𝒐𝒈𝟐 𝑵^𝑳 = 𝑳 𝒍𝒐𝒈𝟐 𝑵");
+console.log("Z toho se již snadno odvodí vzorec na požadovaný počet znaků v hesle:");
+console.log("𝑳 =𝑺/(𝒍𝒐𝒈𝟐 𝑵)");
+console.log("--Narozeninovy paradox--");
+console.log("Skutečnost, že nejméně dva z „n“ lidí mají stejné narozeniny je komplementární jevu, že všechnydata narozenin jsou různé. A její pravděpodobnost p je");
+console.log("𝒑 = 𝟏 − P&#771;");
+console.log("Pokud ze sady o velikosti 𝑯 vybereme 𝒏 prvků, tak pravděpodobnost kolize lze spočítat dle následujícího přibližného vzorce:");
+console.log("𝒑 ≈ 𝟏 − 𝒆^(−𝒏𝟐⁄𝟐𝑯)");
+
 input.on('input', function (e) {
     console.log(zxcvbn(input.val()));
 
