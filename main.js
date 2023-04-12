@@ -9,7 +9,7 @@ console.log("Z toho se již snadno odvodí vzorec na požadovaný počet znaků 
 console.log("𝑳 =𝑺/(𝒍𝒐𝒈𝟐 𝑵)");
 console.log("--Narozeninovy paradox--");
 console.log("Skutečnost, že nejméně dva z „n“ lidí mají stejné narozeniny je komplementární jevu, že všechnydata narozenin jsou různé. A její pravděpodobnost p je");
-console.log("𝒑 = 𝟏 − P&#771;");
+console.log("𝒑 = 𝟏 − P");
 console.log("Pokud ze sady o velikosti 𝑯 vybereme 𝒏 prvků, tak pravděpodobnost kolize lze spočítat dle následujícího přibližného vzorce:");
 console.log("𝒑 ≈ 𝟏 − 𝒆^(−𝒏𝟐⁄𝟐𝑯)");
 
