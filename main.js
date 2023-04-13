@@ -14,7 +14,7 @@ console.log("Pokud ze sady o velikosti 𝑯 vybereme 𝒏 prvků, tak pravděpod
 console.log("𝒑 ≈ 𝟏 − 𝒆^(−𝒏𝟐⁄𝟐𝑯)");
 
 input.on('input', function (e) {
-    console.log(zxcvbn(input.val()));
+    //console.log(zxcvbn(input.val()));
 
     $(".results").remove();
 
@@ -82,21 +82,21 @@ input.on('input', function (e) {
     `);
     let tr10 = $(`
     <tr>
-    <td>100 / hour: </td>
+    <td>10 / second: </td>
     <td>${data.crack_times_display.online_no_throttling_10_per_second}</td>
     <td class="attack-type">Unthrottled online attack</td>
     </tr>
     `);
     let tr10k = $(`
     <tr>
-    <td>100 / hour: </td>
+    <td>10k / second: </td>
     <td>${data.crack_times_display.offline_slow_hashing_1e4_per_second}</td>
     <td class="attack-type">Offline attack, slow hash, many cores</td>
     </tr>
     `);
     let tr10B = $(`
     <tr>
-    <td>100 / hour: </td>
+    <td>10B / second: </td>
     <td>${data.crack_times_display.offline_fast_hashing_1e10_per_second}</td>
     <td class="attack-type">Offline attack, fast hash, many cores</td>
     </tr>
