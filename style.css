@@ -70,6 +70,7 @@ footer ul li a {
 .input h2{
     font-size: 50px;
     margin: 0;
+    text-align: center;
 }
 .input input{
     color: white;
@@ -77,7 +78,18 @@ footer ul li a {
     background: none;
     border: none;
     border-bottom: 3px solid #86f8f2;
-    width: 400px;
+    width: 80%;
+    max-width: 400px;
+}
+#password{
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+table{
+    white-space: nowrap;
+}
+.sequence tr{
+    height: 25px;
 }
 table td:nth-child(1){
 font-weight: bold;
@@ -91,6 +103,7 @@ table td:nth-child(2){
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    max-width: 100%;
 }
 .results table{
     background-color: #2a2a2a;
@@ -115,6 +128,9 @@ table td:nth-child(2){
     min-width: 400px;
     font-size: larger;
 }
+#swap-animation{
+    color: white;
+}
 
 
 #overall{
@@ -125,12 +141,12 @@ table td:nth-child(2){
 #guesses{
     min-width: 60%;
     min-height: 300px;
+    font-size: x-large;
 }
 #guesses tr{
 display: grid;
 grid-template-columns: 1fr 1fr 2fr;
 text-align: center;
-font-size: x-large;
 padding: 15px;
 }
 
@@ -190,3 +206,104 @@ width:912px;
 .suggestion i{
     font-size: 40px;
 }
+
+/* Title-button */
+
+   .button-container{
+    width: 90%;
+    position: relative;
+    height: 60px;
+}
+  .body {
+    background-color: #00b894;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .icon {
+    position: absolute;
+    top: 50%;
+    right: 0%;
+    transform: translate(-50%,-50%);
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+  }
+
+  
+  .arrow {
+    position: absolute;
+    top: 25px;
+    width: 90%;
+    height: 10px;
+    background-color: #fff;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
+    animation: arrow 700ms linear infinite;
+  }
+  
+  .arrow::after, .arrow::before {
+    content: '';
+    position: absolute;
+    width: 60%;
+    height: 10px;
+    right: -8px;
+    background-color: #fff;
+  }
+  
+  .arrow::after {
+    top: -8px;
+    transform: rotate(45deg);
+  }
+  
+  .arrow::before {
+    top: 8px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, .2);
+    transform: rotate(-45deg);
+  }
+
+
+@media only screen and (max-width: 600px) {
+    *{table-layout: fixed;}
+
+    #overall{
+        width: 90%;
+        font-size: large;
+        padding: 20px;
+    }
+    #overall table tbody tr td{
+        column-span: 1;
+
+    }
+    #guesses{
+        width: 90%;
+        padding: 20px;
+        font-size: large;
+    }
+    #guesses tr{
+        padding: 20px;
+        grid-template-columns: 1fr 1fr;
+        }
+    #guesses tr td{
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    #guesses tr td:nth-child(3){
+        display: none;
+    }
+
+    .matchSequenceDiv{
+        padding: 0;
+    }
+
+    .warnandsuggest{
+        width: 90%;
+    }
+    .warning{
+        width: 100%;
+        font-size: x-large;
+    }
+    .suggestion{
+        width: 100%;
+        font-size: x-large;
+    }
+  }

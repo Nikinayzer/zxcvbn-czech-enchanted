@@ -1,7 +1,7 @@
 let body = $('body');
 let input = $('input');
 
-
+/*
 console.log("A little bit of theory: ");
 console.log("Pokud je náhodný výběr a jednotlivé znaky v hesle jsou rozmístěny rovnoměrně, tak entropie (e)závisí na počtu prvků v množině (N) a na počtu prvků, které je mají vybrat (L):");
 console.log("𝑺 = 𝒍𝒐𝒈𝟐 𝑵^𝑳 = 𝑳 𝒍𝒐𝒈𝟐 𝑵");
@@ -12,9 +12,9 @@ console.log("Skutečnost, že nejméně dva z „n“ lidí mají stejné naroze
 console.log("𝒑 = 𝟏 − P");
 console.log("Pokud ze sady o velikosti 𝑯 vybereme 𝒏 prvků, tak pravděpodobnost kolize lze spočítat dle následujícího přibližného vzorce:");
 console.log("𝒑 ≈ 𝟏 − 𝒆^(−𝒏𝟐⁄𝟐𝑯)");
-
+*/
 input.on('input', function (e) {
-    //console.log(zxcvbn(input.val()));
+    console.log(zxcvbn(input.val()));
 
     $(".results").remove();
 
@@ -31,35 +31,35 @@ input.on('input', function (e) {
     let trPassword = $(`
     <tr>
     <td>Password: </td>
-    <td colspan="2">${data.password}</td>
+    <td colspan="1" id="password">${data.password}</td>
     </tr>
     `);
 
     let trGuessesLog10 = $(`
     <tr>
     <td>Guesses Log10: </td>
-    <td colspan="2">${(data.guesses_log10).toFixed(5)}</td>
+    <td colspan="1">${(data.guesses_log10).toFixed(5)}</td>
     </tr>
     `);
 
     let trGuessesLog2 = $(`
     <tr>
     <td>Guesses Log2: </td>
-    <td colspan="2">${(data.guesses_log2).toFixed(5)}</td>
+    <td colspan="1">${(data.guesses_log2).toFixed(5)}</td>
     </tr>
     `);
 
     let trScore = $(`
     <tr>
     <td>Score: </td>
-    <td colspan="2">${data.score}/4</td>
+    <td colspan="1">${data.score}/4</td>
     </tr>
     `);
 
     let trFunctionRuntime = $(`
     <tr>
-    <td>Function runtime (ms): </td>
-    <td colspan="2">${data.calc_time}</td>
+    <td>Runtime(ms): </td>
+    <td colspan="1">${data.calc_time}</td>
     </tr>
     `);
 
@@ -129,22 +129,29 @@ input.on('input', function (e) {
 
     //match sequence
     let matchSequenceDiv = $('<div class ="matchSequenceDiv"></div>');
+    let matchSequenceButton = $('<div class="button-container"><div><div class="icon"><div class="arrow"></div></div></div></div>');
 
-    data.sequence.forEach(element => {
+    data.sequence.forEach(function(element, i) {
 
-        let sequence = $(`<table class="sequence"></table>`);
+        
+        let sequenceContainer = $('<div class="sequence-container"></div>');
+        let sequence = $(`<table class="sequence" id="sequence-${i}"></table>`);
         let sequenceBody = $('<tbody></tbody>');
+
+        let thToken = $(`<thead><tr><th colspan="2">${element.token}</th></tr></thead>`);
 
         let trPattern = $(`<tr><td>Pattern: </td><td>${element.pattern}</td></tr>`);
         let trSequenceGuessesLog10 = $(`<tr><td>Guesses log10: </td><td>${(element.guesses_log10).toFixed(5)}</td></tr>`);
         
+        sequenceContainer.append(sequence);
+        sequence.append(thToken);
         sequenceBody.append(trPattern);
         sequenceBody.append(trSequenceGuessesLog10);
        
 
         switch(element.pattern){
             case "dictionary":
-            //log10 dictionary_name rank reversed l33t un-l33t base-guesses uupercase l33t-var
+            //log10 dictionary_name rank reversed l33t un-l33t base-guesses upercase l33t-var
             let trDictionaryName = $(`<tr><td>Dictionary name: </td><td>${element.dictionary_name}</td></tr>`);
             let trRank = $(`<tr><td>Rank: </td><td>${element.rank}</td></tr>`);
             let trReversed = $(`<tr><td>Reversed? : </td><td>${element.reversed}</td></tr>`);
@@ -221,7 +228,7 @@ input.on('input', function (e) {
 
 
         sequence.append(sequenceBody);
-        matchSequenceDiv.append(sequence);
+        matchSequenceDiv.append(sequenceContainer);
         
     })
 
@@ -234,7 +241,24 @@ input.on('input', function (e) {
     //warningsAndSuggestsionsDiv.append(warningsDiv);
     //warningsAndSuggestsionsDiv.append(suggestionsDiv);
     resultsDiv.append(warningsAndSuggestsionsDiv);
+    resultsDiv.append(matchSequenceButton);
     resultsDiv.append(matchSequenceDiv);
     body.append(resultsDiv);
 
+    let i=1; //for clicks on button... Needs refactoring asap
+    $(document).on("click", ".icon", function (event){
+    i=i+1;
+    let allSequences = document.getElementsByClassName('sequence');
+    if(i>=allSequences.length){
+        i=0;
+    }
+    let neededSequence = document.getElementById(`sequence-${i}`)
+    neededSequence.scrollIntoView({ block: 'center',  behavior: 'smooth' });
+
 });
+});
+
+const icon = $('.icon');
+const arrow = $('.arrow');
+
+
