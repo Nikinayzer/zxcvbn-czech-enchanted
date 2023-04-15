@@ -258,7 +258,4 @@ input.on('input', function (e) {
 });
 });
 
-const icon = $('.icon');
-const arrow = $('.arrow');
-
 
